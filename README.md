@@ -1,7 +1,7 @@
-WoWChat -- README
+AscensionChat -- README
 =================
 
-WoWChat is a Discord integration chat bot for old versions of World of Warcraft.
+AscensionChat is a Discord integration chat bot for old versions of World of Warcraft.
 
 **It does NOT support WoW Classic or Retail servers.**
 
@@ -111,7 +111,7 @@ Even though this bot does not do anything malicious, some servers may not like a
    * Setup the bot with the correct Discord roles/permissions to enter your desired channels.
 
 ## Run
-1. Download the latest ready-made binary from github releases: https://github.com/fjaros/wowchat/releases
+1. Download the latest ready-made binary from github releases: https://github.com/Szyler/AscensionChat/releases
    * **Make sure you have a Java Runtime Environment (JRE) 1.8 or higher installed on your system!**
    * **On Windows**: Edit wowchat.conf as above and run `run.bat`
    * **On Mac/Linux**: Edit wowchat.conf as above and run `run.sh`
