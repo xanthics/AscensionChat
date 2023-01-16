@@ -105,7 +105,7 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
       .toSeq
       .sortBy(_.name)
       .map(m => {
-        s"${m.name} (${m.level}${Classes.valueOf(m.charClass)} in ${GameResources.AREA.getOrElse(m.zoneId, "Unknown Zone")})"
+        s"${m.name} (${m.level}${Classes.valueOf(m.charClass)} ${GameResources.AREA.getOrElse(m.zoneId, "Unknown Zone")})"
       })
       .mkString(getGuildiesOnlineMessage(false), ", ", "")
   }
