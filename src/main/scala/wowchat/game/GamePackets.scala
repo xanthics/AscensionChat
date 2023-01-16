@@ -174,7 +174,7 @@ trait GamePackets {
         case CLASS_SHAMAN => "Shaman"
         case CLASS_MAGE => "Mage"
         case CLASS_WARLOCK => "Warlock"
-        case CLASS_MONK => "Monk"
+        case CLASS_MONK => ""
         case CLASS_DRUID => "Druid"
         case _ => "Unknown"
       }
