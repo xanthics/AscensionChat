@@ -54,6 +54,11 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
       discordChannels.foreach {
         case (channel, channelConfig) =>
           var errors = mutable.ArrayBuffer.empty[String]
+          
+          if (message == "?who" || message == "?online") {
+            channel.sendMessage("?who").queue()
+          }
+          
           val parsedResolvedTags = from.map(_ => {
             messageResolver.resolveTags(channel, parsedLinks, errors += _)
           })
