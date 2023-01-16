@@ -120,7 +120,7 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
       if (size <= 0) {
         "Currently no guildies online."
       } else {
-        s"Currently $size $guildies online:\n"
+        s"Currently $size $guildies online: "
       }
     }
   }
