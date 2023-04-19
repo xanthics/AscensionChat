@@ -49,7 +49,13 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
 
   def sendMessageFromWow(from: Option[String], message: String, wowType: Byte, wowChannel: Option[String]): Unit = {
     Global.wowToDiscord.get((wowType, wowChannel.map(_.toLowerCase))).foreach(discordChannels => {
-      val parsedLinks = messageResolver.resolveEmojis(messageResolver.stripColorCoding(messageResolver.stripTextureCoding(messageResolver.resolveLinks(message))))
+      val parsedLinks = 
+        messageResolver.resolveEmojis(
+        messageResolver.stripColorCoding(
+        messageResolver.stripTextureCoding(
+        messageResolver.stripAtDiscordMentions(
+        messageResolver.resolveLinks(
+          message)))))
 
       discordChannels.foreach {
         case (channel, channelConfig) =>
@@ -96,7 +102,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
           (ChatEvents.CHAT_MSG_GUILD, None), mutable.Set.empty
         ).map(_._1)
       )
-      .foreach(channel => {
+      .foreach(channel => { // TODO: Add a line with "check if variable enabled"
         logger.info(s"WoW->Discord(${channel.getName}) $message")
         channel.sendMessage(message).queue()
       })

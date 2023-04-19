@@ -53,10 +53,16 @@ class MessageResolver(jda: JDA) {
     pass2.replaceAllIn(pass1.replaceAllIn(message.replace("$", "\\$"), _.group(1)), "")
   }
 
-def stripTextureCoding(message: String): String = {
+  def stripTextureCoding(message: String): String = {
     val thisString = s"\\|T(.*?)\\|t".r
 
     thisString.replaceAllIn(message.replace("$", "\\$"), "")
+  }
+
+  def stripAtDiscordMentions(message: String): String = {
+    val thisString = s"@(Here|Everyone)\\b".r
+
+    thisString.replaceAllIn(message.replace("$", "\\$"), _.group(1))
   }
 
   def resolveTags(discordChannel: TextChannel, message: String, onError: String => Unit): String = {
