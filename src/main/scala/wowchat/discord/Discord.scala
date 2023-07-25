@@ -64,8 +64,8 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
           if (message == "?who" || message == "?online") {
             channel.sendMessage("?who").queue()
           } else if (message.startsWith("?invite")) {
-			channel.sendMessage(message).queue()
-		  }
+            channel.sendMessage(message).queue()
+          }
           
           val parsedResolvedTags = from.map(_ => {
             messageResolver.resolveTags(channel, parsedLinks, errors += _)

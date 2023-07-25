@@ -227,8 +227,8 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
         // Some(s"Invite sent to ${target}")
       }
     } else {
-		Some("Command Disabled.")
-	}
+      Some("Command Disabled.")
+    }
   }
 
   protected def buildWhoMessage(name: String): ByteBuf = {
