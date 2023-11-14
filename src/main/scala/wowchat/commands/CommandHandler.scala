@@ -50,7 +50,7 @@ object CommandHandler extends StrictLogging {
             fromChannel.sendMessage(NOT_ONLINE).queue()
             return true
           })(_.handleGmotd())
-		case "invite" =>
+		case "invite" | "inv" =>
 		  Global.game.fold({
             fromChannel.sendMessage(NOT_ONLINE).queue()
             return true

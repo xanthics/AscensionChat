@@ -242,7 +242,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
       .filter(_.nonEmpty)
       .mkString(" ")
     val enableCommandsChannels = Global.config.discord.enableCommandsChannels
-    logger.debug(s"RECV DISCORD MESSAGE: [${channel.getName}] [$effectiveName]: $message")
+//    logger.debug(s"RECV DISCORD MESSAGE: [${channel.getName}] [$effectiveName]: $message")
 
     if ((enableCommandsChannels.nonEmpty && !enableCommandsChannels.contains(channelName)) || !CommandHandler(channel, message)) {
       // send to all configured wow channels
@@ -294,7 +294,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
   def shouldFilter(filtersConfig: Option[FiltersConfig], message: String): Boolean = {
     filtersConfig
       .fold(Global.config.filters)(Some(_))
-      .exists(filters => filters.enabled && filters.patterns.exists(message.matches))
+      .exists(filters => filters.enabled && filters.patterns.exists(message.filter(_ >= ' ').matches))
   }
 
   def sanitizeMessage(message: String): String = {
