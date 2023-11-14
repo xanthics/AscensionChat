@@ -63,9 +63,9 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
           
           if (message == "?who" || message == "?online") {
             channel.sendMessage("?who").queue()
-          } else if (message.startsWith("?invite")) {
-            channel.sendMessage(message).queue()
-          }
+          } else if (message.startsWith("?invite ") || message.startsWith("?inv ")) {
+			channel.sendMessage(message).queue()
+		  }
           
           val parsedResolvedTags = from.map(_ => {
             messageResolver.resolveTags(channel, parsedLinks, errors += _)
@@ -116,13 +116,13 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
       return
     }
 
-	  val formatted = notificationConfig
-  	.format
-	  .replace("%time", Global.getTime)
-	  .replace("%user", name)
-	  .replace("%achievement", messageResolver.resolveAchievementId(achievementId))
+	val formatted = notificationConfig
+	.format
+	.replace("%time", Global.getTime)
+	.replace("%user", name)
+	.replace("%achievement", messageResolver.resolveAchievementId(achievementId))
 
-	  Global.discord.sendGuildNotification("achievement", formatted)
+	Global.discord.sendGuildNotification("achievement", formatted)
 }
 
   override def onStatusChange(event: StatusChangeEvent): Unit = {
