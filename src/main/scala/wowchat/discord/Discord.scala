@@ -63,9 +63,9 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
           
           if (message == "?who" || message == "?online") {
             channel.sendMessage("?who").queue()
-          } else if (message.startsWith("?invite ") || message.startsWith("?inv ")) {
-			channel.sendMessage(message).queue()
-		  }
+          } else if (message.startsWith("?invite ") || message.startsWith("?inv ") || message.startsWith("?ginvite ")) {
+            channel.sendMessage(message).queue()
+          }
           
           val parsedResolvedTags = from.map(_ => {
             messageResolver.resolveTags(channel, parsedLinks, errors += _)
@@ -241,7 +241,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
     val message = (sanitizeMessage(event.getMessage.getContentDisplay) +: event.getMessage.getAttachments.asScala.map(_.getUrl))
       .filter(_.nonEmpty)
       .mkString(" ")
-    val enableCommandsChannels = Global.config.discord.enableCommandsChannels
+    val enableCommandsChannels = Global.config.discord.enableInviteChannels ++ Global.config.discord.enableKickChannels ++ Global.config.discord.enableWhoGmotdChannels
 //    logger.debug(s"RECV DISCORD MESSAGE: [${channel.getName}] [$effectiveName]: $message")
 
     if ((enableCommandsChannels.nonEmpty && !enableCommandsChannels.contains(channelName)) || !CommandHandler(channel, message)) {
