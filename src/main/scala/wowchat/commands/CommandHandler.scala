@@ -71,7 +71,7 @@ object CommandHandler extends StrictLogging {
             fromChannel.sendMessage(NOT_ALLOWED).queue()
             return true
           }
-        case "kick" =>
+        case "gkick" =>
           if (Global.config.discord.enableKickChannels.contains(incChannel)) {
             Global.game.fold({
               fromChannel.sendMessage(NOT_ONLINE).queue()
