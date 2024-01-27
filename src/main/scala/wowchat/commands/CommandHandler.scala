@@ -36,7 +36,7 @@ object CommandHandler extends StrictLogging {
     Try {
       possibleCommand match {
         case "who" | "online" =>
-          if (Global.config.discord.enableWhoGmotdChannels.contains(incChannel)) {
+          if (Global.config.discord.enableWhoGmotdChannels.isEmpty || Global.config.discord.enableWhoGmotdChannels.contains(incChannel)) {
             Global.game.fold({
               fromChannel.sendMessage(NOT_ONLINE).queue()
               return true
@@ -52,7 +52,7 @@ object CommandHandler extends StrictLogging {
             return true
           }
         case "gmotd" =>
-          if (Global.config.discord.enableWhoGmotdChannels.contains(incChannel)) {
+          if (Global.config.discord.enableWhoGmotdChannels.isEmpty || Global.config.discord.enableWhoGmotdChannels.contains(incChannel)) {
             Global.game.fold({
               fromChannel.sendMessage(NOT_ONLINE).queue()
               return true
@@ -63,6 +63,7 @@ object CommandHandler extends StrictLogging {
           }
         case "invite" | "inv" | "ginvite" =>
           if (Global.config.discord.enableInviteChannels.contains(incChannel)) {
+            fromChannel.sendMessage(s"Invite sent: ${splt(1)}").queue()
             Global.game.fold({
               fromChannel.sendMessage(NOT_ONLINE).queue()
               return true
@@ -73,6 +74,7 @@ object CommandHandler extends StrictLogging {
           }
         case "gkick" =>
           if (Global.config.discord.enableKickChannels.contains(incChannel)) {
+            fromChannel.sendMessage(s"Kick sent: ${splt(1)}").queue()
             Global.game.fold({
               fromChannel.sendMessage(NOT_ONLINE).queue()
               return true

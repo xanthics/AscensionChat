@@ -230,26 +230,18 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
   }
 
   override def handleGuildInvite(target: String): Option[String] = {
-    if (Global.config.discord.enableInviteCommand) {
-      if (Global.config.discord.bannedInviteList.contains(target.toLowerCase)) {
-        Some(s"Player ${target} is banned.  Invite not sent.")
-      } else {
-        sendGuildInvite(target)
-        None
-        // Some(s"Invite sent to ${target}")
-      }
+    if (Global.config.discord.bannedInviteList.contains(target.toLowerCase)) {
+      Some(s"Player ${target} is banned.  Invite not sent.")
     } else {
-      Some("Command Disabled.")
+      sendGuildInvite(target)
+      None
+      // Some(s"Invite sent to ${target}")
     }
   }
 
   override def handleGuildKick(target: String): Option[String] = {
-    if (Global.config.discord.enableKickCommand) {
-      sendGuildKick(target)
-      None
-    } else {
-      Some("Command Disabled.")
-    }
+    sendGuildKick(target)
+    None
   }
 
   protected def buildWhoMessage(name: String): ByteBuf = {
