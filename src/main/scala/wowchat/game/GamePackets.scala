@@ -47,6 +47,7 @@ trait GamePackets {
   object ChatEvents {
     // err...
     lazy val CHAT_MSG_SAY = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x00.toByte else 0x01.toByte
+    lazy val CHAT_MSG_RAID = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x02.toByte else 0x03.toByte // VANILLA value is a guess
     lazy val CHAT_MSG_GUILD = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x03.toByte else 0x04.toByte
     lazy val CHAT_MSG_OFFICER = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x04.toByte else 0x05.toByte
     lazy val CHAT_MSG_YELL = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x05.toByte else 0x06.toByte
@@ -61,6 +62,9 @@ trait GamePackets {
     lazy val CHAT_MSG_CHANNEL_NOTICE = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x12.toByte else 0x15.toByte
     lazy val CHAT_MSG_CHANNEL_NOTICE_USER = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x13.toByte else 0x16.toByte
 
+    lazy val CHAT_MSG_RAID_LEADER = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x25.toByte else 0x27.toByte // VANILLA value is a guess
+    lazy val CHAT_MSG_RAID_WARNING = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x26.toByte else 0x28.toByte // VANILLA value is a guess
+
     lazy val CHAT_MSG_ACHIEVEMENT = if (WowChatConfig.getExpansion == WowExpansion.MoP) 0x2E.toByte else 0x30.toByte
     lazy val CHAT_MSG_GUILD_ACHIEVEMENT = if (WowChatConfig.getExpansion == WowExpansion.MoP) 0x2F.toByte else 0x31.toByte
 
@@ -68,6 +72,9 @@ trait GamePackets {
       (tp.toLowerCase match {
         case "system" => CHAT_MSG_SYSTEM
         case "say" => CHAT_MSG_SAY
+        case "raid" => CHAT_MSG_RAID
+        case "raidleader" => CHAT_MSG_RAID_LEADER
+        case "raidwarning" => CHAT_MSG_RAID_WARNING
         case "guild" => CHAT_MSG_GUILD
         case "officer" => CHAT_MSG_OFFICER
         case "yell" => CHAT_MSG_YELL
@@ -81,6 +88,9 @@ trait GamePackets {
     def valueOf(tp: Byte): String = {
       tp match {
         case CHAT_MSG_SAY => "Say"
+        case CHAT_MSG_RAID => "Raid"
+        case CHAT_MSG_RAID_LEADER => "RaidLeader"
+        case CHAT_MSG_RAID_WARNING => "RaidWarning"
         case CHAT_MSG_GUILD => "Guild"
         case CHAT_MSG_OFFICER => "Officer"
         case CHAT_MSG_YELL => "Yell"
