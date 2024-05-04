@@ -135,7 +135,8 @@ class GamePacketHandlerWotLK(realmId: Int, realmName: String, sessionKey: Array[
     }
 
     msg.byteBuf.skipBytes(4)
-
+	val gmMessage = msg.id == SMSG_GM_MESSAGECHAT
+	
     if (msg.id == SMSG_GM_MESSAGECHAT) {
       msg.byteBuf.skipBytes(4)
       msg.skipString
@@ -163,7 +164,7 @@ class GamePacketHandlerWotLK(realmId: Int, realmName: String, sessionKey: Array[
       handleAchievementEvent(guid, msg.byteBuf.readIntLE)
       None
     } else {
-      Some(ChatMessage(guid, tp, txt, channelName))
+      Some(ChatMessage(guid, tp, txt, channelName, gmMessage))
     }
   }
 

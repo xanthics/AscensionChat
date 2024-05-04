@@ -47,9 +47,9 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
     changeStatus(ActivityType.DEFAULT, message)
   }
 
-  def sendMessageFromWow(from: Option[String], message: String, wowType: Byte, wowChannel: Option[String]): Unit = {
+  def sendMessageFromWow(from: Option[String], message: String, wowType: Byte, wowChannel: Option[String], gmMessage: Boolean = false): Unit = {
     Global.wowToDiscord.get((wowType, wowChannel.map(_.toLowerCase))).foreach(discordChannels => {
-      val parsedLinks = 
+      val parsedLinks =
         messageResolver.resolveEmojis(
         messageResolver.stripColorCoding(
         messageResolver.stripTextureCoding(
@@ -59,41 +59,45 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
 
       discordChannels.foreach {
         case (channel, channelConfig) =>
-          var errors = mutable.ArrayBuffer.empty[String]
-          
-          if (message == "?who" || message == "?online") {
-            channel.sendMessage("?who").queue()
-          } else if (message.startsWith("?invite ") || message.startsWith("?inv ") || message.startsWith("?ginvite ")) {
-            channel.sendMessage(message).queue()
-          }
-          
-          val parsedResolvedTags = from.map(_ => {
-            messageResolver.resolveTags(channel, parsedLinks, errors += _)
-          })
-            .getOrElse(parsedLinks)
-            .replace("`", "\\`")
-            .replace("*", "\\*")
-            .replace("_", "\\_")
-            .replace("~", "\\~")
+		  if (!channelConfig.gmchat || (channelConfig.gmchat && gmMessage)) {
+            var errors = mutable.ArrayBuffer.empty[String]
 
-          val formatted = channelConfig
-            .format
-            .replace("%time", Global.getTime)
-            .replace("%user", from.getOrElse(""))
-            .replace("%message", parsedResolvedTags)
-            .replace("%target", wowChannel.getOrElse(""))
+            if (message == "?who" || message == "?online") {
+              channel.sendMessage("?who").queue()
+            } else if (message.startsWith("?invite ") || message.startsWith("?inv ") || message.startsWith("?ginvite ")) {
+              channel.sendMessage(message).queue()
+            }
 
-          val filter = shouldFilter(channelConfig.filters, formatted)
-          logger.info(s"${if (filter) "FILTERED " else ""}WoW->Discord(${channel.getName}) $formatted")
-          if (!filter) {
-            channel.sendMessage(formatted).queue()
-          }
-          if (Global.config.discord.enableTagFailedNotifications) {
-            errors.foreach(error => {
-              Global.game.foreach(_.sendMessageToWow(ChatEvents.CHAT_MSG_WHISPER, error, from))
-              channel.sendMessage(error).queue()
+            val parsedResolvedTags = from.map(_ => {
+              messageResolver.resolveTags(channel, parsedLinks, errors += _)
             })
-          }
+              .getOrElse(parsedLinks)
+              .replace("`", "\\`")
+              .replace("*", "\\*")
+              .replace("_", "\\_")
+              .replace("~", "\\~")
+
+            val formatted = channelConfig
+              .format
+              .replace("%time", Global.getTime)
+              .replace("%user", from.getOrElse(""))
+              .replace("%message", parsedResolvedTags)
+              .replace("%target", wowChannel.getOrElse(""))
+
+            val filter = shouldFilter(channelConfig.filters, formatted)
+            logger.info(s"${if (filter) "FILTERED " else ""}WoW->Discord(${channel.getName}) $formatted")
+            if (!filter) {
+              channel.sendMessage(formatted).queue()
+            }
+            if (Global.config.discord.enableTagFailedNotifications) {
+              errors.foreach(error => {
+                Global.game.foreach(_.sendMessageToWow(ChatEvents.CHAT_MSG_WHISPER, error, from))
+                channel.sendMessage(error).queue()
+              })
+            }
+		  } else {
+//			logger.info(s"GM FILTERED WoW->Discord($from: ${channel.getName}) $message || $gmMessage || ${channelConfig.gmchat}")
+		  }
       }
     })
   }

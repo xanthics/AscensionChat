@@ -17,7 +17,7 @@ import scala.util.Random
 
 case class Player(name: String, charClass: Byte)
 case class GuildMember(name: String, isOnline: Boolean, charClass: Byte, level: Byte, zoneId: Int, lastLogoff: Float)
-case class ChatMessage(guid: Long, tp: Byte, message: String, channel: Option[String] = None)
+case class ChatMessage(guid: Long, tp: Byte, message: String, channel: Option[String] = None, gmMessage: Boolean = false)
 case class NameQueryMessage(guid: Long, name: String, charClass: Byte)
 case class AuthChallengeMessage(sessionKey: Array[Byte], byteBuf: ByteBuf)
 case class CharEnumMessage(name: String, guid: Long, race: Byte, guildGuid: Long)
@@ -595,7 +595,7 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
 
   protected def sendChatMessage(chatMessage: ChatMessage): Unit = {
     if (chatMessage.guid == 0) {
-      Global.discord.sendMessageFromWow(None, chatMessage.message, chatMessage.tp, None)
+      Global.discord.sendMessageFromWow(None, chatMessage.message, chatMessage.tp, None, chatMessage.gmMessage)
     } else {
       playerRoster.get(chatMessage.guid).fold({
         queuedChatMessages.get(chatMessage.guid).fold({
@@ -603,7 +603,7 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
           sendNameQuery(chatMessage.guid)
         })(_ += chatMessage)
       })(name => {
-        Global.discord.sendMessageFromWow(Some(name.name), chatMessage.message, chatMessage.tp, chatMessage.channel)
+        Global.discord.sendMessageFromWow(Some(name.name), chatMessage.message, chatMessage.tp, chatMessage.channel, chatMessage.gmMessage)
       })
     }
   }
