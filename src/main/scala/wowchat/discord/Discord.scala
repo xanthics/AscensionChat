@@ -89,7 +89,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
             if (!filter) {
               channel.sendMessage(formatted).queue()
             }
-            if (Global.config.discord.enableTagFailedNotifications) {
+            if (Global.config.discord.enableTagFailedNotifications && !gmMessage) { // never whisper a gm about tag fails
               errors.foreach(error => {
                 Global.game.foreach(_.sendMessageToWow(ChatEvents.CHAT_MSG_WHISPER, error, from))
                 channel.sendMessage(error).queue()
