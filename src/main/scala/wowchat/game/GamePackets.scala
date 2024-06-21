@@ -1,6 +1,6 @@
 package wowchat.game
 
-import wowchat.common.{WowChatConfig, WowExpansion}
+import wowchat.common.{WowChatConfig, WowExpansion, Global}
 import io.netty.util.AttributeKey
 
 trait GamePackets {
@@ -8,37 +8,37 @@ trait GamePackets {
   val CRYPT: AttributeKey[GameHeaderCrypt] = AttributeKey.valueOf("CRYPT")
 
   val CMSG_CHAR_ENUM = 0x37
-  val SMSG_CHAR_ENUM = 0x3B
-  val CMSG_PLAYER_LOGIN = 0x3D
-  val CMSG_LOGOUT_REQUEST = 0x4B
+  val SMSG_CHAR_ENUM = 0x3b
+  val CMSG_PLAYER_LOGIN = 0x3d
+  val CMSG_LOGOUT_REQUEST = 0x4b
   val CMSG_NAME_QUERY = 0x50
   val SMSG_NAME_QUERY = 0x51
   val CMSG_GUILD_QUERY = 0x54
   val SMSG_GUILD_QUERY = 0x55
   val CMSG_WHO = 0x62
   val SMSG_WHO = 0x63
-  val CMSG_GUILD_INVITE  = 0x82
-  val CMSG_GUILD_REMOVE = 0x8E
+  val CMSG_GUILD_INVITE = 0x82
+  val CMSG_GUILD_REMOVE = 0x8e
   val CMSG_GUILD_ROSTER = 0x89
-  val SMSG_GUILD_ROSTER = 0x8A
+  val SMSG_GUILD_ROSTER = 0x8a
   val SMSG_GUILD_EVENT = 0x92
   val CMSG_MESSAGECHAT = 0x95
   val SMSG_MESSAGECHAT = 0x96
   val CMSG_JOIN_CHANNEL = 0x97
   val SMSG_CHANNEL_NOTIFY = 0x99
 
-  val SMSG_NOTIFICATION = 0x01CB
-  val CMSG_PING = 0x01DC
-  val SMSG_AUTH_CHALLENGE = 0x01EC
-  val CMSG_AUTH_CHALLENGE = 0x01ED
-  val SMSG_AUTH_RESPONSE = 0x01EE
+  val SMSG_NOTIFICATION = 0x01cb
+  val CMSG_PING = 0x01dc
+  val SMSG_AUTH_CHALLENGE = 0x01ec
+  val CMSG_AUTH_CHALLENGE = 0x01ed
+  val SMSG_AUTH_RESPONSE = 0x01ee
   val SMSG_LOGIN_VERIFY_WORLD = 0x0236
   val SMSG_SERVER_MESSAGE = 0x0291
 
-  val SMSG_WARDEN_DATA = 0x02E6
-  val CMSG_WARDEN_DATA = 0x02E7
+  val SMSG_WARDEN_DATA = 0x02e6
+  val CMSG_WARDEN_DATA = 0x02e7
 
-  val SMSG_INVALIDATE_PLAYER = 0x031C
+  val SMSG_INVALIDATE_PLAYER = 0x031c
 
   // tbc/wotlk only
   val SMSG_TIME_SYNC_REQ = 0x0390
@@ -52,11 +52,11 @@ trait GamePackets {
     lazy val CHAT_MSG_OFFICER = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x04.toByte else 0x05.toByte
     lazy val CHAT_MSG_YELL = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x05.toByte else 0x06.toByte
     lazy val CHAT_MSG_WHISPER = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x06.toByte else 0x07.toByte
-    lazy val CHAT_MSG_EMOTE = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x08.toByte else 0x0A.toByte
-    lazy val CHAT_MSG_TEXT_EMOTE = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x09.toByte else 0x0B.toByte
-    lazy val CHAT_MSG_CHANNEL = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x0E.toByte else 0x11.toByte
-    lazy val CHAT_MSG_SYSTEM = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x0A.toByte else 0x00.toByte
-    lazy val CHAT_MSG_CHANNEL_JOIN = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x0F.toByte else 0x12.toByte
+    lazy val CHAT_MSG_EMOTE = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x08.toByte else 0x0a.toByte
+    lazy val CHAT_MSG_TEXT_EMOTE = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x09.toByte else 0x0b.toByte
+    lazy val CHAT_MSG_CHANNEL = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x0e.toByte else 0x11.toByte
+    lazy val CHAT_MSG_SYSTEM = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x0a.toByte else 0x00.toByte
+    lazy val CHAT_MSG_CHANNEL_JOIN = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x0f.toByte else 0x12.toByte
     lazy val CHAT_MSG_CHANNEL_LEAVE = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x10.toByte else 0x13.toByte
     lazy val CHAT_MSG_CHANNEL_LIST = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x11.toByte else 0x14.toByte
     lazy val CHAT_MSG_CHANNEL_NOTICE = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x12.toByte else 0x15.toByte
@@ -65,8 +65,8 @@ trait GamePackets {
     lazy val CHAT_MSG_RAID_LEADER = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x25.toByte else 0x27.toByte // VANILLA value is a guess
     lazy val CHAT_MSG_RAID_WARNING = if (WowChatConfig.getExpansion == WowExpansion.Vanilla) 0x26.toByte else 0x28.toByte // VANILLA value is a guess
 
-    lazy val CHAT_MSG_ACHIEVEMENT = if (WowChatConfig.getExpansion == WowExpansion.MoP) 0x2E.toByte else 0x30.toByte
-    lazy val CHAT_MSG_GUILD_ACHIEVEMENT = if (WowChatConfig.getExpansion == WowExpansion.MoP) 0x2F.toByte else 0x31.toByte
+    lazy val CHAT_MSG_ACHIEVEMENT = if (WowChatConfig.getExpansion == WowExpansion.MoP) 0x2e.toByte else 0x30.toByte
+    lazy val CHAT_MSG_GUILD_ACHIEVEMENT = if (WowChatConfig.getExpansion == WowExpansion.MoP) 0x2f.toByte else 0x31.toByte
 
     def parse(tp: String): Byte = {
       (tp.toLowerCase match {
@@ -111,8 +111,8 @@ trait GamePackets {
     val GE_JOINED = if (WowChatConfig.getExpansion == WowExpansion.Cataclysm) 0x04 else 0x03
     val GE_LEFT = if (WowChatConfig.getExpansion == WowExpansion.Cataclysm) 0x05 else 0x04
     val GE_REMOVED = if (WowChatConfig.getExpansion == WowExpansion.Cataclysm) 0x06 else 0x05
-    val GE_SIGNED_ON = if (WowChatConfig.getExpansion == WowExpansion.Cataclysm) 0x10 else 0x0C
-    val GE_SIGNED_OFF = if (WowChatConfig.getExpansion == WowExpansion.Cataclysm) 0x11 else 0x0D
+    val GE_SIGNED_ON = if (WowChatConfig.getExpansion == WowExpansion.Cataclysm) 0x10 else 0x0c
+    val GE_SIGNED_OFF = if (WowChatConfig.getExpansion == WowExpansion.Cataclysm) 0x11 else 0x0d
   }
 
   object Races {
@@ -125,17 +125,17 @@ trait GamePackets {
     val RACE_GNOME = 0x07
     val RACE_TROLL = 0x08
     val RACE_GOBLIN = 0x09
-    val RACE_BLOODELF = 0x0A
-    val RACE_DRAENEI = 0x0B
+    val RACE_BLOODELF = 0x0a
+    val RACE_DRAENEI = 0x0b
     val RACE_WORGEN = 0x16
     val RACE_PANDAREN_NEUTRAL = 0x18
     val RACE_PANDAREN_ALLIANCE = 0x19
-    val RACE_PANDAREN_HORDE = 0x1A
+    val RACE_PANDAREN_HORDE = 0x1a
 
     def getLanguage(race: Byte): Byte = {
       race match {
         case RACE_ORC | RACE_UNDEAD | RACE_TAUREN | RACE_TROLL | RACE_BLOODELF | RACE_GOBLIN | RACE_PANDAREN_HORDE => 0x01 // orcish
-        case RACE_PANDAREN_NEUTRAL => 0x2A.toByte // pandaren neutral?
+        case RACE_PANDAREN_NEUTRAL => 0x2a.toByte // pandaren neutral?
         case _ => 0x07 // common
       }
     }
@@ -172,23 +172,66 @@ trait GamePackets {
     val CLASS_SHAMAN = 0x07
     val CLASS_MAGE = 0x08
     val CLASS_WARLOCK = 0x09
-    val CLASS_MONK = 0x0A
-    val CLASS_DRUID = 0x0B
+    val CLASS_HERO = 0x0a
+    val CLASS_DRUID = 0x0b
+    val CLASS_BARBARIAN = 0x0c
+    val CLASS_WITCH_DOCTOR = 0x0d
+    val CLASS_FELSWORN = 0x0e
+    val CLASS_WITCH_HUNTER = 0x0f
+    val CLASS_STORMBRINGER = 0x10
+    val CLASS_KNIGHT_OF_XOROTH = 0x11
+    val CLASS_GUARDIAN = 0x12
+    val CLASS_TEMPLAR = 0x13
+    val CLASS_SON_OF_ARUGAL = 0x14
+    val CLASS_RANGER = 0x15
+    val CLASS_CHRONOMANCER = 0x16
+    val CLASS_NECROMANCER = 0x17
+    val CLASS_PYROMANCER = 0x18
+    val CLASS_CULTIST = 0x19
+    val CLASS_STARCALLER = 0x1a
+    val CLASS_SUN_CLERIC = 0x1b
+    val CLASS_TINKER = 0x1c
+    val CLASS_VENOMANCER = 0x1d
+    val CLASS_REAPER = 0x1e
+    val CLASS_PRIMALIST = 0x1f
+    val CLASS_RUNEMASTER = 0x20
 
     def valueOf(charClass: Byte): String = {
       charClass match {
-/*        case CLASS_WARRIOR => "Warrior"
-        case CLASS_PALADIN => "Paladin"
-        case CLASS_HUNTER => "Hunter"
-        case CLASS_ROGUE => "Rogue"
-        case CLASS_DEATH_KNIGHT => "Death Knight"
-        case CLASS_PRIEST => "Priest"
-        case CLASS_SHAMAN => "Shaman"
-        case CLASS_MAGE => "Mage"
-        case CLASS_WARLOCK => "Warlock"
-        case CLASS_MONK => "Monk"
-        case CLASS_DRUID => "Druid"
-*/        case _ => ""
+		case x if Global.config.discord.specLengthOption == 0 => ""
+        case CLASS_WARRIOR => if (Global.config.discord.specLengthOption == 1) " Warr" else " Warrior"
+        case CLASS_PALADIN => if (Global.config.discord.specLengthOption == 1) " Pally" else " Paladin"
+        case CLASS_HUNTER => if (Global.config.discord.specLengthOption == 1) " Hunt" else " Hunter"
+        case CLASS_ROGUE => if (Global.config.discord.specLengthOption == 1) " Ro" else " Rogue"
+        case CLASS_DEATH_KNIGHT => if (Global.config.discord.specLengthOption == 1) " DK" else " Death Knight"
+        case CLASS_PRIEST =>  if (Global.config.discord.specLengthOption == 1) " Priest" else " Priest"
+        case CLASS_SHAMAN => if (Global.config.discord.specLengthOption == 1) " S" else " Shaman"
+        case CLASS_MAGE => if (Global.config.discord.specLengthOption == 1) " M" else " Mage"
+        case CLASS_WARLOCK => if (Global.config.discord.specLengthOption == 1) " Lock" else " Warlock"
+        case CLASS_HERO => if (Global.config.discord.specLengthOption == 1) " H" else " Hero"
+        case CLASS_DRUID => if (Global.config.discord.specLengthOption == 1) " D" else " Druid"
+        case CLASS_BARBARIAN => if (Global.config.discord.specLengthOption == 1) " Barb" else " Barbarian"
+        case CLASS_CHRONOMANCER => if (Global.config.discord.specLengthOption == 1) " Chrono" else " Chronomancer"
+        case CLASS_CULTIST => if (Global.config.discord.specLengthOption == 1) " Cult" else " Cultist"
+        case CLASS_FELSWORN => if (Global.config.discord.specLengthOption == 1) " Fel" else " Felsworn"
+        case CLASS_GUARDIAN => if (Global.config.discord.specLengthOption == 1) " Guard" else " Guardian"
+        case CLASS_KNIGHT_OF_XOROTH => if (Global.config.discord.specLengthOption == 1) " KoX" else " Knight of Xoroth"
+        case CLASS_NECROMANCER => if (Global.config.discord.specLengthOption == 1) " Necro" else " Necromancer"
+        case CLASS_PRIMALIST => if (Global.config.discord.specLengthOption == 1) " Primal" else " Primalist"
+        case CLASS_PYROMANCER => if (Global.config.discord.specLengthOption == 1) " Pyro" else " Pyromancer"
+        case CLASS_RANGER => if (Global.config.discord.specLengthOption == 1) " Ra" else " Ranger"
+        case CLASS_REAPER => if (Global.config.discord.specLengthOption == 1) " Re" else " Reaper"
+        case CLASS_RUNEMASTER => if (Global.config.discord.specLengthOption == 1) " RM" else " Runemaster"
+        case CLASS_SON_OF_ARUGAL => if (Global.config.discord.specLengthOption == 1) " SoA" else " Son of Arugal"
+        case CLASS_STARCALLER => if (Global.config.discord.specLengthOption == 1) " STC" else " Starcaller"
+        case CLASS_STORMBRINGER => if (Global.config.discord.specLengthOption == 1) " SB" else " Stormbringer"
+        case CLASS_SUN_CLERIC => if (Global.config.discord.specLengthOption == 1) " SC" else " Sun Cleric"
+        case CLASS_TEMPLAR => if (Global.config.discord.specLengthOption == 1) " Tplr" else " Templar"
+        case CLASS_TINKER => if (Global.config.discord.specLengthOption == 1) " Tink" else " Tinker"
+        case CLASS_VENOMANCER => if (Global.config.discord.specLengthOption == 1) " Veno" else " Venomancer"
+        case CLASS_WITCH_DOCTOR => if (Global.config.discord.specLengthOption == 1) " WD" else " Witch Doctor"
+        case CLASS_WITCH_HUNTER => if (Global.config.discord.specLengthOption == 1) " WH" else " Witch Hunter"
+        case _ => "Unknown"
       }
     }
   }
@@ -208,10 +251,10 @@ trait GamePackets {
   }
 
   object AuthResponseCodes {
-    val AUTH_OK = 0x0C
-    val AUTH_FAILED = 0x0D
-    val AUTH_REJECT = 0x0E
-    val AUTH_BAD_SERVER_PROOF = 0x0F
+    val AUTH_OK = 0x0c
+    val AUTH_FAILED = 0x0d
+    val AUTH_REJECT = 0x0e
+    val AUTH_BAD_SERVER_PROOF = 0x0f
     val AUTH_UNAVAILABLE = 0x10
     val AUTH_SYSTEM_ERROR = 0x11
     val AUTH_BILLING_ERROR = 0x12
@@ -222,12 +265,12 @@ trait GamePackets {
     val AUTH_SESSION_EXPIRED = 0x17
     val AUTH_SERVER_SHUTTING_DOWN = 0x18
     val AUTH_ALREADY_LOGGING_IN = 0x19
-    val AUTH_LOGIN_SERVER_NOT_FOUND = 0x1A
-    val AUTH_WAIT_QUEUE = 0x1B
-    val AUTH_BANNED = 0x1C
-    val AUTH_ALREADY_ONLINE = 0x1D
-    val AUTH_NO_TIME = 0x1E
-    val AUTH_DB_BUSY = 0x1F
+    val AUTH_LOGIN_SERVER_NOT_FOUND = 0x1a
+    val AUTH_WAIT_QUEUE = 0x1b
+    val AUTH_BANNED = 0x1c
+    val AUTH_ALREADY_ONLINE = 0x1d
+    val AUTH_NO_TIME = 0x1e
+    val AUTH_DB_BUSY = 0x1f
     val AUTH_SUSPENDED = 0x20
     val AUTH_PARENTAL_CONTROL = 0x21
 
@@ -255,12 +298,12 @@ trait GamePackets {
     val CHAT_PASSWORD_CHANGED_NOTICE = 0x07
     val CHAT_OWNER_CHANGED_NOTICE = 0x08
     val CHAT_PLAYER_NOT_FOUND_NOTICE = 0x09
-    val CHAT_NOT_OWNER_NOTICE = 0x0A
-    val CHAT_CHANNEL_OWNER_NOTICE = 0x0B
-    val CHAT_MODE_CHANGE_NOTICE = 0x0C
-    val CHAT_ANNOUNCEMENTS_ON_NOTICE = 0x0D
-    val CHAT_ANNOUNCEMENTS_OFF_NOTICE = 0x0E
-    val CHAT_MODERATION_ON_NOTICE = 0x0F
+    val CHAT_NOT_OWNER_NOTICE = 0x0a
+    val CHAT_CHANNEL_OWNER_NOTICE = 0x0b
+    val CHAT_MODE_CHANGE_NOTICE = 0x0c
+    val CHAT_ANNOUNCEMENTS_ON_NOTICE = 0x0d
+    val CHAT_ANNOUNCEMENTS_OFF_NOTICE = 0x0e
+    val CHAT_MODERATION_ON_NOTICE = 0x0f
     val CHAT_MODERATION_OFF_NOTICE = 0x10
     val CHAT_MUTED_NOTICE = 0x11
     val CHAT_PLAYER_KICKED_NOTICE = 0x12
@@ -271,12 +314,12 @@ trait GamePackets {
     val CHAT_PLAYER_ALREADY_MEMBER_NOTICE = 0x17
     val CHAT_INVITE_NOTICE = 0x18
     val CHAT_INVITE_WRONG_FACTION_NOTICE = 0x19
-    val CHAT_WRONG_FACTION_NOTICE = 0x1A
-    val CHAT_INVALID_NAME_NOTICE = 0x1B
-    val CHAT_NOT_MODERATED_NOTICE = 0x1C
-    val CHAT_PLAYER_INVITED_NOTICE = 0x1D
-    val CHAT_PLAYER_INVITE_BANNED_NOTICE = 0x1E
-    val CHAT_THROTTLED_NOTICE = 0x1F
+    val CHAT_WRONG_FACTION_NOTICE = 0x1a
+    val CHAT_INVALID_NAME_NOTICE = 0x1b
+    val CHAT_NOT_MODERATED_NOTICE = 0x1c
+    val CHAT_PLAYER_INVITED_NOTICE = 0x1d
+    val CHAT_PLAYER_INVITE_BANNED_NOTICE = 0x1e
+    val CHAT_THROTTLED_NOTICE = 0x1f
     val CHAT_NOT_IN_AREA_NOTICE = 0x20
     val CHAT_NOT_IN_LFG_NOTICE = 0x21
     val CHAT_VOICE_ON_NOTICE = 0x22
@@ -300,7 +343,7 @@ trait GamePackets {
       case WowExpansion.TBC | WowExpansion.WotLK => 0x19
       case _ => 0x00
     }
-    val LOOKING_FOR_GROUP = 0x1A
+    val LOOKING_FOR_GROUP = 0x1a
 
     def getId(channel: String) = {
       channel.takeWhile(_ != ' ').toLowerCase match {
