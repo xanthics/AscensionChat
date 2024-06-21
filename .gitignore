@@ -2,3 +2,8 @@
 *iml
 target
 GreetBot
+.metals/
+.bloop/
+.ammonite/
+metals.sbt
+.vscode/
