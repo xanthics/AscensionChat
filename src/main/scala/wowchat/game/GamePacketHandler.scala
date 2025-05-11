@@ -244,6 +244,50 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
     None
   }
 
+  protected def sendGuildPromote(target: String): Unit = {
+    ctx.foreach(ctx => {
+      val out = PooledByteBufAllocator.DEFAULT.buffer(64, 64)
+      out.writeBytes(target.getBytes("UTF-8"))
+	  out.writeByte(0)
+      val packet = Packet(CMSG_GUILD_PROMOTE, out)
+      ctx.writeAndFlush(packet)
+
+      logger.info(s"target | bytes: ${target} -- ${target.getBytes("UTF-8")}")
+    })
+  }
+
+  protected def sendGuildDemote(target: String): Unit = {
+    ctx.foreach(ctx => {
+      val out = PooledByteBufAllocator.DEFAULT.buffer(64, 64)
+      out.writeBytes(target.getBytes("UTF-8"))
+	  out.writeByte(0)
+      val packet = Packet(CMSG_GUILD_DEMOTE, out)
+      ctx.writeAndFlush(packet)
+
+      logger.info(s"target | bytes: ${target} -- ${target.getBytes("UTF-8")}")
+    })
+  }
+
+  override def handleGuildPromote(target: String): Option[String] = {
+    if (target.isEmpty) {
+      return Some("Error: No target specified for promotion.")
+    }
+
+    sendGuildPromote(target)
+    None
+    // Some(s"Promotion packet sent for target: $target")
+  }
+
+  override def handleGuildDemote(target: String): Option[String] = {
+    if (target.isEmpty) {
+      return Some("Error: No target specified for demotion.")
+    }
+
+    sendGuildDemote(target)
+    None
+    // Some(s"Demotion packet sent for target: $target")
+  }
+
   protected def buildWhoMessage(name: String): ByteBuf = {
     val byteBuf = PooledByteBufAllocator.DEFAULT.buffer(64, 64)
     byteBuf.writeIntLE(0)  // level min
@@ -509,10 +553,15 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
       return
     }
 
-    // ignore events from self
-    if (event != GuildEvents.GE_MOTD && Global.config.wow.character.equalsIgnoreCase(messages.head)) {
-      return
-    }
+  // Allow self-processing only for promotion, demotion, and GMOTD events
+  val isSelfEvent = Global.config.wow.character.equalsIgnoreCase(messages.head)
+  val isAllowedSelfEvent = event == GuildEvents.GE_PROMOTED || 
+                           event == GuildEvents.GE_DEMOTED || 
+                           event == GuildEvents.GE_MOTD
+
+  if (isSelfEvent && !isAllowedSelfEvent) {
+    return
+  }
 
     val eventConfigKey = event match {
       case GuildEvents.GE_PROMOTED => "promoted"

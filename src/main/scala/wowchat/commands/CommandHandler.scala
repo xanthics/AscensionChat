@@ -83,6 +83,28 @@ object CommandHandler extends StrictLogging {
             fromChannel.sendMessage(NOT_ALLOWED).queue()
             return true
           }
+        case "gpromote" | "promote" =>
+          if (Global.config.discord.enablePromoteChannels.contains(incChannel)) {
+            fromChannel.sendMessage(s"Promote sent: ${splt(1)}").queue()
+            Global.game.fold({
+              fromChannel.sendMessage(NOT_ONLINE).queue()
+              return true
+            })(_.handleGuildPromote(splt(1)))
+          } else {
+            fromChannel.sendMessage(NOT_ALLOWED).queue()
+            return true
+          }
+        case "gdemote" | "demote" =>
+          if (Global.config.discord.enableDemoteChannels.contains(incChannel)) {
+            fromChannel.sendMessage(s"Demote sent: ${splt(1)}").queue()
+            Global.game.fold({
+              fromChannel.sendMessage(NOT_ONLINE).queue()
+              return true
+            })(_.handleGuildDemote(splt(1)))
+          } else {
+            fromChannel.sendMessage(NOT_ALLOWED).queue()
+            return true
+          }
       }
     }.fold(throwable => {
       // command not found, should send to wow chat

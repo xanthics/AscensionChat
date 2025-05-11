@@ -66,6 +66,10 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
               channel.sendMessage("?who").queue()
             } else if (message.startsWith("?invite ") || message.startsWith("?inv ") || message.startsWith("?ginvite ")) {
               channel.sendMessage(message).queue()
+            } else if (message.startsWith("?promote ") || message.startsWith("?gpromote ")) {
+              channel.sendMessage(message).queue()
+            } else if (message.startsWith("?demote ") || message.startsWith("?gdemote ")) {
+              channel.sendMessage(message).queue()
             }
 
             val parsedResolvedTags = from.map(_ => {
@@ -245,7 +249,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
     val message = (sanitizeMessage(event.getMessage.getContentDisplay) +: event.getMessage.getAttachments.asScala.map(_.getUrl))
       .filter(_.nonEmpty)
       .mkString(" ")
-    val enableCommandsChannels = Global.config.discord.enableInviteChannels ++ Global.config.discord.enableKickChannels ++ Global.config.discord.enableWhoGmotdChannels
+    val enableCommandsChannels = Global.config.discord.enableInviteChannels ++ Global.config.discord.enableKickChannels ++ Global.config.discord.enablePromoteChannels ++ Global.config.discord.enableDemoteChannels ++ Global.config.discord.enableWhoGmotdChannels
 //    logger.debug(s"RECV DISCORD MESSAGE: [${channel.getName}] [$effectiveName]: $message")
 
     if (!CommandHandler(channel, message)) {

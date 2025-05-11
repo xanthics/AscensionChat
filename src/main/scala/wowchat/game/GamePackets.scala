@@ -19,6 +19,8 @@ trait GamePackets {
   val SMSG_WHO = 0x63
   val CMSG_GUILD_INVITE = 0x82
   val CMSG_GUILD_REMOVE = 0x8e
+  val CMSG_GUILD_PROMOTE = 0x08b
+  val CMSG_GUILD_DEMOTE = 0x08c
   val CMSG_GUILD_ROSTER = 0x89
   val SMSG_GUILD_ROSTER = 0x8a
   val SMSG_GUILD_EVENT = 0x92
