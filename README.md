@@ -1,3 +1,7 @@
+# IMPORTANT
+## This project is currently mothballed because Ascension changed their login packets and will not share the updated generation method.  This project will remain archived until/if that is changed.
+
+
 AscensionChat -- README
 =================
 
