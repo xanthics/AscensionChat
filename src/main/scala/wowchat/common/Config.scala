@@ -13,7 +13,7 @@ import scala.reflect.runtime.universe.{TypeTag, typeOf}
 
 case class WowChatConfig(discord: DiscordConfig, wow: Wow, guildConfig: GuildConfig, channels: Seq[ChannelConfig], filters: Option[FiltersConfig])
 case class DiscordConfig(token: String, enableDotCommands: Boolean, dotCommandsWhitelist: Set[String], bannedInviteList: Set[String], enableInviteChannels: Set[String], enableKickChannels: Set[String], enablePromoteChannels: Set[String], enableDemoteChannels: Set[String], enableWhoGmotdChannels: Set[String], enableTagFailedNotifications: Boolean, specLengthOption: Int)
-case class Wow(locale: String, platform: Platform.Value, build: Option[Int], realmlist: RealmListConfig, account: Array[Byte], password: String, character: String, enableServerMotd: Boolean)
+case class Wow(locale: String, platform: Platform.Value, build: Option[Int], realmlist: RealmListConfig, account: String, password: String, character: String, enableServerMotd: Boolean)
 case class RealmListConfig(name: String, host: String, port: Int)
 case class GuildConfig(notificationConfigs: Map[String, GuildNotificationConfig])
 case class GuildNotificationConfig(enabled: Boolean, format: String, channel: Option[String])
@@ -71,7 +71,7 @@ object WowChatConfig extends GamePackets {
         Platform.valueOf(getOpt[String](wowConf, "platform").getOrElse("Mac")),
         getOpt[Int](wowConf, "build"),
         parseRealmlist(wowConf),
-        convertToUpper(wowConf.getString("account")),
+        wowConf.getString("account"),
         wowConf.getString("password"),
         wowConf.getString("character"),
         getOpt[Boolean](wowConf, "enable_server_motd").getOrElse(true)
@@ -111,15 +111,8 @@ object WowChatConfig extends GamePackets {
       })
   }
 
-  private def convertToUpper(account: String): Array[Byte] = {
-    account.map(c => {
-      if (c >= 'a' && c <= 'z') {
-        c.toUpper
-      } else {
-        c
-      }
-    }).getBytes("UTF-8")
-  }
+  lazy val getRealmBuild: Int = Global.config.wow.realmBuild.getOrElse(buildFromVersion)
+  lazy val getGameBuild: Int = Global.config.wow.gameBuild.getOrElse(buildFromVersion)
 
   private def parseRealmlist(wowConf: Config): RealmListConfig = {
     val realmlist = wowConf.getString("realmlist")
