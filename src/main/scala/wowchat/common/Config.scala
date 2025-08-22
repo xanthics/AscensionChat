@@ -111,9 +111,6 @@ object WowChatConfig extends GamePackets {
       })
   }
 
-  lazy val getRealmBuild: Int = Global.config.wow.realmBuild.getOrElse(buildFromVersion)
-  lazy val getGameBuild: Int = Global.config.wow.gameBuild.getOrElse(buildFromVersion)
-
   private def parseRealmlist(wowConf: Config): RealmListConfig = {
     val realmlist = wowConf.getString("realmlist")
     val splt = realmlist.split(":", 2)
