@@ -253,7 +253,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
     val channel = event.getChannel
     val channelId = channel.getId
     val channelName = event.getChannel.getName.toLowerCase
-    val effectiveName = event.getMember.getEffectiveName
+    val effectiveName = sanitizeName(event.getMember.getEffectiveName)
     val message = (sanitizeMessage(event.getMessage.getContentDisplay) +: event.getMessage.getAttachments.asScala.map(_.getUrl))
       .filter(_.nonEmpty)
       .mkString(" ")
@@ -310,6 +310,10 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
     filtersConfig
       .fold(Global.config.filters)(Some(_))
       .exists(filters => filters.enabled && filters.patterns.exists(message.filter(_ >= ' ').matches))
+  }
+
+  def sanitizeName(name: String): String = {
+    name.replace("|", "||")
   }
 
   def sanitizeMessage(message: String): String = {
