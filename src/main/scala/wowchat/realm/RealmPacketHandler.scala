@@ -75,8 +75,8 @@ class RealmPacketHandler(realmConnectionCallback: RealmConnectionCallback)
       case Platform.Mac => "OSX"
     }
     val localeString = Global.config.wow.locale
-    val login = Global.config.wow.account.getBytes("utf-8")
-    val password = Global.config.wow.password.getBytes("utf-8")
+    val login = Global.config.wow.account
+    val password = Global.config.wow.password
     val (password_encrypted, password_encrypted_tag) = handshake.encrypt_password(password)
 
     val data = PooledByteBufAllocator.DEFAULT.buffer(351, 423)
@@ -86,7 +86,7 @@ class RealmPacketHandler(realmConnectionCallback: RealmConnectionCallback)
     data.writeByte(version(0))
     data.writeByte(version(1))
     data.writeByte(version(2))
-    data.writeShortLE(WowChatConfig.getBuild)
+    data.writeShortLE(WowChatConfig.getRealmBuild)
     data.writeIntLE(ByteUtils.stringToInt("x86"))
     data.writeIntLE(ByteUtils.stringToInt(platformString))
     data.writeIntLE(ByteUtils.stringToInt(localeString))

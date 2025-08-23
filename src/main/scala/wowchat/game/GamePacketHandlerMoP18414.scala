@@ -134,12 +134,20 @@ class GamePacketHandlerMoP18414(realmId: Int, realmName: String, sessionKey: Arr
     msg.readBitSeq(guid3, 1, 4)
     val nameLength = msg.readBits(6)
     msg.readBitSeq(guid2, 6)
-    msg.readBitSeq(guid3, 6, 0)
+    msg.resetBitReader
+    msg.readXorByteSeq(guid3, 6, 0)
 
     val name = msg.byteBuf.readCharSequence(nameLength, Charset.forName("UTF-8")).toString
 
     // can't be bothered to parse the rest of this crap
     NameQueryMessage(ByteUtils.bytesToLongLE(guid), name, charClass)
+  }
+
+  override protected def parseInvalidatePlayer(msg: Packet): Long = {
+    val guid = new Array[Byte](8)
+    msg.readBitSeq(guid, 6, 3, 1, 2, 7, 5, 0, 4)
+    msg.readXorByteSeq(guid, 7, 1, 2, 3, 6, 0, 4, 5)
+    ByteUtils.bytesToLongLE(guid)
   }
 
   override protected def buildWhoMessage(name: String): ByteBuf = {
@@ -254,7 +262,7 @@ class GamePacketHandlerMoP18414(realmId: Int, realmName: String, sessionKey: Arr
   }
 
   override protected def parseAuthChallenge(msg: Packet): AuthChallengeMessage = {
-    val account = Global.config.wow.account.getBytes("utf-8")
+    val account = Global.config.wow.account
 
     msg.byteBuf.skipBytes(35) // MoP - 35 bytes random data
     val serverSeed = msg.byteBuf.readInt
@@ -290,7 +298,7 @@ class GamePacketHandlerMoP18414(realmId: Int, realmName: String, sessionKey: Arr
     out.writeByte(digest(5))
     out.writeByte(digest(6))
     out.writeByte(digest(8))
-    out.writeShortLE(WowChatConfig.getBuild)
+    out.writeShortLE(WowChatConfig.getGameBuild)
     out.writeByte(digest(17))
     out.writeByte(digest(7))
     out.writeByte(digest(13))

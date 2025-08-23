@@ -29,14 +29,14 @@ class GamePacketHandlerWotLK(realmId: Int, realmName: String, sessionKey: Array[
   ).map(_.toByte)
 
   override protected def parseAuthChallenge(msg: Packet): AuthChallengeMessage = {
-    val account = Global.config.wow.account.getBytes("utf-8")
+    val account = Global.config.wow.account
 
     msg.byteBuf.skipBytes(4) // wotlk
     val serverSeed = msg.byteBuf.readInt
     val clientSeed = Random.nextInt
     val out = PooledByteBufAllocator.DEFAULT.buffer(200, 400)
     out.writeShortLE(0)
-    out.writeIntLE(WowChatConfig.getBuild)
+    out.writeIntLE(WowChatConfig.getGameBuild)
     out.writeIntLE(0)
     out.writeBytes(account)
     out.writeByte(0)

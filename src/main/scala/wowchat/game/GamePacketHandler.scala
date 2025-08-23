@@ -305,6 +305,7 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
     logger.info("Connected! Authenticating...")
     this.ctx = Some(ctx)
     Global.game = Some(this)
+    runPingExecutor
   }
 
   override def channelRead(ctx: ChannelHandlerContext, msg: scala.Any): Unit = {
@@ -348,13 +349,13 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
   }
 
   protected def parseAuthChallenge(msg: Packet): AuthChallengeMessage = {
-    val account = Global.config.wow.account.getBytes("utf-8")
+    val account = Global.config.wow.account
 
     val serverSeed = msg.byteBuf.readInt
     val clientSeed = Random.nextInt
     val out = PooledByteBufAllocator.DEFAULT.buffer(200, 400)
     out.writeShortLE(0)
-    out.writeIntLE(WowChatConfig.getBuild)
+    out.writeIntLE(WowChatConfig.getGameBuild)
     out.writeIntLE(0)
     out.writeBytes(account)
     out.writeByte(0)
@@ -378,6 +379,12 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
     if (code == AuthResponseCodes.AUTH_OK) {
       logger.info("Successfully logged in!")
       sendCharEnum
+    } else if (code == AuthResponseCodes.AUTH_WAIT_QUEUE) {
+      if (msg.byteBuf.readableBytes() >= 14) {
+        msg.byteBuf.skipBytes(10)
+      }
+      val position = msg.byteBuf.readIntLE
+      logger.info(s"Queue enabled. Position: $position")
     } else {
       logger.error(AuthResponseCodes.getMessage(code))
       ctx.foreach(_.close)
@@ -422,8 +429,12 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
 
   private def handle_SMSG_CHAR_ENUM(msg: Packet): Unit = {
     if (receivedCharEnum) {
-      // Do not parse char enum again
-      return
+      if (inWorld) {
+        // Do not parse char enum again if we've already joined the world.
+        return
+      } else {
+        logger.info("Received character enum more than once. Trying to join the world again...")
+      }
     }
     receivedCharEnum = true
     parseCharEnum(msg).fold({
@@ -492,7 +503,6 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
     Global.discord.changeRealmStatus(realmName)
     gameEventCallback.connected
     runKeepAliveExecutor
-    runPingExecutor
     runGuildRosterExecutor
     if (guildGuid != 0) {
       queryGuildName
@@ -826,8 +836,12 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
   }
 
   private def handle_SMSG_INVALIDATE_PLAYER(msg: Packet): Unit = {
-    val guid = msg.byteBuf.readLongLE
+    val guid = parseInvalidatePlayer(msg)
     playerRoster.remove(guid)
+  }
+
+  protected def parseInvalidatePlayer(msg: Packet): Long = {
+    msg.byteBuf.readLongLE
   }
 
   private def handle_SMSG_WARDEN_DATA(msg: Packet): Unit = {
