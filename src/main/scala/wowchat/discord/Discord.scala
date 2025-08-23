@@ -318,6 +318,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
 
   def sanitizeMessage(message: String): String = {
     EmojiParser.parseToAliases(message, EmojiParser.FitzpatrickAction.REMOVE)
+    message.replace("|", "||")
   }
 
   def splitUpMessage(format: String, name: String, message: String): Seq[String] = {
