@@ -6,10 +6,12 @@ import com.typesafe.scalalogging.StrictLogging
 import com.vdurmont.emoji.EmojiParser
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.JDA.Status
-import net.dv8tion.jda.api.entities.{Activity, ChannelType, MessageType}
+import net.dv8tion.jda.api.entities.{Activity, MessageType}
 import net.dv8tion.jda.api.entities.Activity.ActivityType
-import net.dv8tion.jda.api.events.{ShutdownEvent, StatusChangeEvent}
+import net.dv8tion.jda.api.entities.channel.ChannelType
+import net.dv8tion.jda.api.events.StatusChangeEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.events.session.ShutdownEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.requests.{CloseCode, GatewayIntent}
 import net.dv8tion.jda.api.utils.MemberCachePolicy
@@ -23,9 +25,15 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
   with GamePackets with StrictLogging {
 
   private val jda = JDABuilder
-    .createDefault(Global.config.discord.token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_EMOJIS)
+    .createDefault(Global.config.discord.token,
+      GatewayIntent.GUILD_EXPRESSIONS,
+      GatewayIntent.GUILD_MEMBERS,
+      GatewayIntent.GUILD_MESSAGES,
+      GatewayIntent.GUILD_PRESENCES,
+      GatewayIntent.MESSAGE_CONTENT)
     .setMemberCachePolicy(MemberCachePolicy.ALL)
-    .disableCache(CacheFlag.VOICE_STATE)
+    .disableCache(CacheFlag.SCHEDULED_EVENTS,
+      CacheFlag.VOICE_STATE)
     .addEventListeners(this)
     .build
 
@@ -44,7 +52,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
   }
 
   def changeRealmStatus(message: String): Unit = {
-    changeStatus(ActivityType.DEFAULT, message)
+    changeStatus(ActivityType.CUSTOM_STATUS, message)
   }
 
   def sendMessageFromWow(from: Option[String], message: String, wowType: Byte, wowChannel: Option[String], gmMessage: Boolean = false): Unit = {
@@ -60,7 +68,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
       discordChannels.foreach {
         case (channel, channelConfig) =>
 		  if (!channelConfig.gmchat || (channelConfig.gmchat && gmMessage)) {
-            var errors = mutable.ArrayBuffer.empty[String]
+            val errors = mutable.ArrayBuffer.empty[String]
 
             if (message == "?who" || message == "?online") {
               channel.sendMessage("?who").queue()
@@ -161,7 +169,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
         eligibleDiscordChannels.foreach(channel => {
           configChannels
             .filter {
-              case (name, channelConfig) =>
+              case (name, _) =>
                 name.equalsIgnoreCase(channel.getName) ||
                 name == channel.getId
             }
@@ -220,7 +228,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
   override def onShutdown(event: ShutdownEvent): Unit = {
     event.getCloseCode match {
       case CloseCode.DISALLOWED_INTENTS =>
-        logger.error("Per new Discord rules, you must check the PRESENCE INTENT and SERVER MEMBERS INTENT boxes under \"Privileged Gateway Intents\" for this bot in the developer portal. You can find more info at https://discord.com/developers/docs/topics/gateway#privileged-intents")
+        logger.error("Per new Discord rules, you must check the PRESENCE INTENT, SERVER MEMBERS INTENT, and MESSAGE CONTENT INTENT boxes under \"Privileged Gateway Intents\" for this bot in the developer portal. You can find more info at https://discord.com/developers/docs/topics/gateway#privileged-intents")
       case _ =>
     }
   }
@@ -249,7 +257,6 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
     val message = (sanitizeMessage(event.getMessage.getContentDisplay) +: event.getMessage.getAttachments.asScala.map(_.getUrl))
       .filter(_.nonEmpty)
       .mkString(" ")
-    val enableCommandsChannels = Global.config.discord.enableInviteChannels ++ Global.config.discord.enableKickChannels ++ Global.config.discord.enablePromoteChannels ++ Global.config.discord.enableDemoteChannels ++ Global.config.discord.enableWhoGmotdChannels
     logger.debug(s"RECV DISCORD MESSAGE: [${channel.getName}] [$effectiveName]: $message")
 
     if (!CommandHandler(channel, message)) {
