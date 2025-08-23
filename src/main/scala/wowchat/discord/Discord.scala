@@ -100,7 +100,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
               })
             }
 		  } else {
-//			logger.info(s"GM FILTERED WoW->Discord($from: ${channel.getName}) $message || $gmMessage || ${channelConfig.gmchat}")
+			logger.info(s"GM FILTERED WoW->Discord($from: ${channel.getName}) $message || $gmMessage || ${channelConfig.gmchat}")
 		  }
       }
     })
@@ -250,7 +250,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
       .filter(_.nonEmpty)
       .mkString(" ")
     val enableCommandsChannels = Global.config.discord.enableInviteChannels ++ Global.config.discord.enableKickChannels ++ Global.config.discord.enablePromoteChannels ++ Global.config.discord.enableDemoteChannels ++ Global.config.discord.enableWhoGmotdChannels
-//    logger.debug(s"RECV DISCORD MESSAGE: [${channel.getName}] [$effectiveName]: $message")
+    logger.debug(s"RECV DISCORD MESSAGE: [${channel.getName}] [$effectiveName]: $message")
 
     if (!CommandHandler(channel, message)) {
       // send to all configured wow channels

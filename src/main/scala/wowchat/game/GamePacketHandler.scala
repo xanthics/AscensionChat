@@ -638,7 +638,7 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
   }
 
   protected def handle_SMSG_MESSAGECHAT(msg: Packet): Unit = {
-//    logger.debug(s"RECV CHAT: ${ByteUtils.toHexString(msg.byteBuf, true, true)}")
+    logger.debug(s"RECV CHAT: ${ByteUtils.toHexString(msg.byteBuf, true, true)}")
     parseChatMessage(msg).foreach(sendChatMessage)
   }
 
