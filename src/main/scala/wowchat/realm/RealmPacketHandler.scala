@@ -59,6 +59,10 @@ class RealmPacketHandler(realmConnectionCallback: RealmConnectionCallback)
     super.channelInactive(ctx)
   }
 
+  private val SOME_VAL = Array(
+     0xFC, 0xF4, 0xF4, 0xE6
+  ).map(_.toByte)
+
   override def channelActive(ctx: ChannelHandlerContext): Unit = {
     logger.info(s"Connected! Sending account login information...")
 
@@ -109,7 +113,7 @@ class RealmPacketHandler(realmConnectionCallback: RealmConnectionCallback)
     data_2.writeByte(RealmPackets.CMD_AUTH_LOGON_CHALLENGE)
     data_2.writeByte(8) // protocol version
     data_2.writeShortLE(605 + 16 + 4 + password.length)
-    data_2.writeBytes(java.util.HexFormat.of.parseHex("fcf4f4e6"))
+    data_2.writeBytes(SOME_VAL)
     val data_1__ = data_1_.dropRight(4) // been feeling extra fancy? or maybe just a bug?
     val (data_3, data_3_tag) = handshake.encrypt_packet(data_1__, data_2_)
     val mask = 0xed.toByte
