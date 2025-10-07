@@ -195,7 +195,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
             .replace("%user", name)
             .replace("%achievement", messageResolver.resolveAchievementId(achievementId))
 
-          Discord.sendMessage(discordChannel, formatted)
+          Global.discord.sendGuildNotification("achievement", formatted)
       })
   }
 
