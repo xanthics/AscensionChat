@@ -846,7 +846,7 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
 
   private def handle_SMSG_WARDEN_DATA(msg: Packet): Unit = {
     if (Global.config.wow.platform == Platform.Windows) {
-      logger.error("WARDEN ON WINDOWS IS NOT SUPPORTED! BOT WILL SOON DISCONNECT! TRY TO USE PLATFORM MAC!")
+      //logger.error("WARDEN ON WINDOWS IS NOT SUPPORTED! BOT WILL SOON DISCONNECT! TRY TO USE PLATFORM MAC!")
       return
     }
 
