@@ -3,6 +3,7 @@ package wowchat.commands
 import com.typesafe.scalalogging.StrictLogging
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import wowchat.common.Global
+import wowchat.discord.Discord
 import wowchat.game.{GamePackets, GameResources, GuildInfo, GuildMember}
 
 import scala.collection.mutable
@@ -38,7 +39,7 @@ object CommandHandler extends StrictLogging {
         case "who" | "online" =>
           if (Global.config.discord.enableWhoGmotdChannels.isEmpty || Global.config.discord.enableWhoGmotdChannels.contains(incChannel)) {
             Global.game.fold({
-              fromChannel.sendMessage(NOT_ONLINE).queue()
+              Discord.sendMessage(fromChannel, NOT_ONLINE)
               return true
             })(game => {
               val whoSucceeded = game.handleWho(arguments)
@@ -54,7 +55,7 @@ object CommandHandler extends StrictLogging {
         case "gmotd" =>
           if (Global.config.discord.enableWhoGmotdChannels.isEmpty || Global.config.discord.enableWhoGmotdChannels.contains(incChannel)) {
             Global.game.fold({
-              fromChannel.sendMessage(NOT_ONLINE).queue()
+              Discord.sendMessage(fromChannel, NOT_ONLINE)
               return true
             })(_.handleGmotd())
           } else {
@@ -112,7 +113,7 @@ object CommandHandler extends StrictLogging {
     }, opt => {
       // command found, do not send to wow chat
       if (opt.isDefined) {
-        fromChannel.sendMessage(opt.get).queue()
+        Discord.sendMessage(fromChannel, opt.get)
       }
       true
     })

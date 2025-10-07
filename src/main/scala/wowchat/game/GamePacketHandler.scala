@@ -3,13 +3,13 @@ package wowchat.game
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.util.concurrent.{Executors, TimeUnit}
-
 import wowchat.common._
 import wowchat.game.warden.{WardenHandler, WardenPackets}
 import com.typesafe.scalalogging.StrictLogging
 import io.netty.buffer.{ByteBuf, PooledByteBufAllocator}
 import io.netty.channel.{ChannelFuture, ChannelHandlerContext, ChannelInboundHandlerAdapter}
 import wowchat.commands.{CommandHandler, WhoResponse}
+import wowchat.discord.Discord
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -770,10 +770,10 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
         )
         if (approximateMatches.isEmpty) {
           // No approximate matches found.
-          CommandHandler.whoRequest.messageChannel.sendMessage(s"No player named ${CommandHandler.whoRequest.playerName} is currently playing.").queue()
+          Discord.sendMessage(CommandHandler.whoRequest.messageChannel, s"No player named ${CommandHandler.whoRequest.playerName} is currently playing.")
         } else {
           // Send at most 3 approximate matches.
-          approximateMatches.take(3).foreach(CommandHandler.whoRequest.messageChannel.sendMessage(_).queue())
+          approximateMatches.take(3).foreach(Discord.sendMessage(CommandHandler.whoRequest.messageChannel, _))
         }
       } else {
         // Approximate matches found online!
@@ -782,11 +782,11 @@ class GamePacketHandler(realmId: Int, realmName: String, sessionKey: Array[Byte]
             guildInfo,
             guildRoster,
             guildMember => guildMember.name.equalsIgnoreCase(CommandHandler.whoRequest.playerName)
-          ).foreach(CommandHandler.whoRequest.messageChannel.sendMessage(_).queue())
+          ).foreach(Discord.sendMessage(CommandHandler.whoRequest.messageChannel, _))
         })
       }
     } else {
-      handledResponses.foreach(CommandHandler.whoRequest.messageChannel.sendMessage(_).queue())
+      handledResponses.foreach(Discord.sendMessage(CommandHandler.whoRequest.messageChannel, _))
     }
   }
 
