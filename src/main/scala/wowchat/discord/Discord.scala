@@ -125,13 +125,13 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
             val errors = mutable.ArrayBuffer.empty[String]
 
             if (message == "?who" || message == "?online") {
-              channel.sendMessage("?who").queue()
+              Discord.sendMessage(channel, "?who")
             } else if (message.startsWith("?invite ") || message.startsWith("?inv ") || message.startsWith("?ginvite ")) {
-              channel.sendMessage(message).queue()
+              Discord.sendMessage(channel, message)
             } else if (message.startsWith("?promote ") || message.startsWith("?gpromote ")) {
-              channel.sendMessage(message).queue()
+              Discord.sendMessage(channel, message)
             } else if (message.startsWith("?demote ") || message.startsWith("?gdemote ")) {
-              channel.sendMessage(message).queue()
+              Discord.sendMessage(channel, message)
             }
 
             val parsedResolvedTags = from.map(_ => {
@@ -174,7 +174,7 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
           (ChatEvents.CHAT_MSG_GUILD, None), mutable.Set.empty
         ).map(_._1)
       )
-      .foreach(channel => { // TODO: Add a line with "check if variable enabled"
+      .foreach(channel => {
         logger.info(s"WoW->Discord(${channel.getName}) $message")
         Discord.sendMessage(channel, message)
       })
@@ -186,11 +186,14 @@ class Discord(discordConnectionCallback: CommonConnectionCallback) extends Liste
       return
     }
 
-	val formatted = notificationConfig
-	.format
-	.replace("%time", Global.getTime)
-	.replace("%user", name)
-	.replace("%achievement", messageResolver.resolveAchievementId(achievementId))
+    Global.wowToDiscord.get((ChatEvents.CHAT_MSG_GUILD, None))
+      .foreach(_.foreach {
+        case (discordChannel, _) =>
+          val formatted = notificationConfig
+            .format
+            .replace("%time", Global.getTime)
+            .replace("%user", name)
+            .replace("%achievement", messageResolver.resolveAchievementId(achievementId))
 
           Discord.sendMessage(discordChannel, formatted)
       })

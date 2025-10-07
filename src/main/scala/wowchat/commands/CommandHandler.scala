@@ -49,7 +49,7 @@ object CommandHandler extends StrictLogging {
               whoSucceeded
             })
           } else {
-            fromChannel.sendMessage(NOT_ALLOWED).queue()
+            Discord.sendMessage(fromChannel, NOT_ALLOWED)
             return true
           }
         case "gmotd" =>
@@ -59,51 +59,51 @@ object CommandHandler extends StrictLogging {
               return true
             })(_.handleGmotd())
           } else {
-            fromChannel.sendMessage(NOT_ALLOWED).queue()
+            Discord.sendMessage(fromChannel, NOT_ALLOWED)
             return true
           }
         case "invite" | "inv" | "ginvite" =>
           if (Global.config.discord.enableInviteChannels.contains(incChannel)) {
-            fromChannel.sendMessage(s"Invite sent: ${splt(1)}").queue()
+            Discord.sendMessage(fromChannel, s"Invite sent: ${splt(1)}")
             Global.game.fold({
-              fromChannel.sendMessage(NOT_ONLINE).queue()
+              Discord.sendMessage(fromChannel, NOT_ONLINE)
               return true
             })(_.handleGuildInvite(splt(1)))
           } else {
-            fromChannel.sendMessage(NOT_ALLOWED).queue()
+            Discord.sendMessage(fromChannel, NOT_ALLOWED)
             return true
           }
         case "gkick" =>
           if (Global.config.discord.enableKickChannels.contains(incChannel)) {
-            fromChannel.sendMessage(s"Kick sent: ${splt(1)}").queue()
+            Discord.sendMessage(fromChannel, s"Kick sent: ${splt(1)}")
             Global.game.fold({
-              fromChannel.sendMessage(NOT_ONLINE).queue()
+              Discord.sendMessage(fromChannel, NOT_ONLINE)
               return true
             })(_.handleGuildKick(splt(1)))
           } else {
-            fromChannel.sendMessage(NOT_ALLOWED).queue()
+            Discord.sendMessage(fromChannel, NOT_ALLOWED)
             return true
           }
         case "gpromote" | "promote" =>
           if (Global.config.discord.enablePromoteChannels.contains(incChannel)) {
-            fromChannel.sendMessage(s"Promote sent: ${splt(1)}").queue()
+            Discord.sendMessage(fromChannel, s"Promote sent: ${splt(1)}")
             Global.game.fold({
-              fromChannel.sendMessage(NOT_ONLINE).queue()
+              Discord.sendMessage(fromChannel, NOT_ONLINE)
               return true
             })(_.handleGuildPromote(splt(1)))
           } else {
-            fromChannel.sendMessage(NOT_ALLOWED).queue()
+            Discord.sendMessage(fromChannel, NOT_ALLOWED)
             return true
           }
         case "gdemote" | "demote" =>
           if (Global.config.discord.enableDemoteChannels.contains(incChannel)) {
-            fromChannel.sendMessage(s"Demote sent: ${splt(1)}").queue()
+            Discord.sendMessage(fromChannel, s"Demote sent: ${splt(1)}")
             Global.game.fold({
-              fromChannel.sendMessage(NOT_ONLINE).queue()
+              Discord.sendMessage(fromChannel, NOT_ONLINE)
               return true
             })(_.handleGuildDemote(splt(1)))
           } else {
-            fromChannel.sendMessage(NOT_ALLOWED).queue()
+            Discord.sendMessage(fromChannel, NOT_ALLOWED)
             return true
           }
       }
